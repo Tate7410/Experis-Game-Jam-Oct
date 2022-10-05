@@ -14,7 +14,7 @@ public class Movement : MonoBehaviour
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
 
-
+    public float jumpForce = 5f;
 
     // Update is called once per frame
     void Update()
@@ -39,13 +39,19 @@ public class Movement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-
-            rb.velocity = moveDir.normalized * speed * Time.deltaTime;
+            moveDir = moveDir.normalized;
+            rb.velocity = new Vector3(moveDir.x * speed * Time.deltaTime, rb.velocity.y, moveDir.z * speed * Time.deltaTime) ;
             //controller.Move(moveDir.normalized * speed * Time.deltaTime);
         }
         else
         {
-            speed = 0f;
+            speed = rb.velocity.magnitude;
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            rb.AddRelativeForce(Vector3.up * jumpForce);
         }
     }
+
 }

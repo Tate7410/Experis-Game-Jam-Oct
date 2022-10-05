@@ -1177,9 +1177,10 @@ MonoBehaviour:
   rb: {fileID: 1303554777}
   cam: {fileID: 963194228}
   speed: 0
-  maxSpeed: 500
+  maxSpeed: 800
   speedUpTime: 500
-  turnSmoothTime: 0.01
+  turnSmoothTime: 0.1
+  jumpForce: 300
 --- !u!54 &1303554777
 Rigidbody:
   m_ObjectHideFlags: 0
