@@ -39,6 +39,9 @@ public class Movement : MonoBehaviour
     public float maxJumpHeight = 1.0f;
     public float maxJumpTime = 0.5f;
 
+    // animator
+    public Animator anim;
+
 
     private void Start()
     {
@@ -76,6 +79,8 @@ public class Movement : MonoBehaviour
             //rb.AddRelativeForce(Vector3.up * jumpForce);
             isJumping = true;
             useGroundedGravity = false;
+            anim.SetTrigger("Jump");
+            anim.SetBool("Jumping", true);
             rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.5f, rb.velocity.z);
         }
 
@@ -136,7 +141,7 @@ public class Movement : MonoBehaviour
             
             if (isJumping)
             {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 0.1f); // don't turn
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 1f); // don't turn
             }
             else
             {
@@ -155,6 +160,7 @@ public class Movement : MonoBehaviour
             else
             {
                 rb.velocity = new Vector3(moveDir.x, 0f, moveDir.z).normalized * speed * Time.deltaTime;
+                anim.SetBool("Moving", true);
             }
 
             //controller.Move(moveDir.normalized * speed * Time.deltaTime);
@@ -162,6 +168,7 @@ public class Movement : MonoBehaviour
         else
         {
             speed = rb.velocity.magnitude;
+            anim.SetBool("Moving", false);
             if (!isJumping)
             {
                 rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
@@ -175,6 +182,7 @@ public class Movement : MonoBehaviour
         if (collision.gameObject.tag == "Ground")
         {
             isJumping = false;
+            anim.SetBool("Jumping", false);
             useGroundedGravity = true;
         }
     }

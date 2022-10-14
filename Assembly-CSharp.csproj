@@ -60,8 +60,14 @@
     <Compile Include="Assets\Movement.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\EasyOutlines\URP\Shaders\OutlineSpecular.shader" />
+    <None Include="Assets\EasyOutlines\URP\Shaders\OutlineMetallic.shader" />
     <None Include="Assets\QuickOutline\Resources\Shaders\OutlineMask.shader" />
+    <None Include="Assets\EasyOutlines\URP\Shaders\OnlyOutline.shader" />
     <None Include="Assets\QuickOutline\Readme.txt" />
+    <None Include="Assets\EasyOutlines\URP\Shaders\MaskOutline\OutlineMask.shader" />
+    <None Include="Assets\Shaders\MainLight.hlsl" />
+    <None Include="Assets\EasyOutlines\URP\Shaders\MaskOutline\OnlyOutlineWithMask.shader" />
     <None Include="Assets\QuickOutline\Resources\Shaders\OutlineFill.shader" />
     <None Include="Assets\EasyOutlines\Readme.txt" />
   </ItemGroup>
