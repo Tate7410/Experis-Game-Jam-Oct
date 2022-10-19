@@ -58,6 +58,7 @@
   <ItemGroup>
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Movement.cs" />
+    <Compile Include="Assets\PlayerAnimatorHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\EasyOutlines\URP\Shaders\OutlineSpecular.shader" />
