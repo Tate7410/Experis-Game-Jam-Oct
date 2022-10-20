@@ -16,7 +16,9 @@ public class Movement : MonoBehaviour
     public LayerMask whatIsGround;
     public float groundCheckRadius = 0.25f;
 
-    // speed variables
+    // movement variables
+    public Vector3 direction;
+    Vector3 moveDir;
     public float speed = 0f;
     public float maxSpeed;
     public float airSpeed = 200f;
@@ -61,6 +63,19 @@ public class Movement : MonoBehaviour
     // animator
     public Animator anim;
 
+    // hit reaction
+    public bool hitReaction = false;
+    public bool hitRecover = false;
+    public float hitForce = 3f;
+    public float hitTimer;
+    float hitTimerReset;
+
+    // slide
+    public bool isSliding = false;
+    public float InitialSlideSpeed = 5f;
+    public float slideSlowSpeed = 0.1f;
+    public float slideSpeedThreshold = 0.5f;
+
 
     private void Start()
     {
@@ -68,6 +83,7 @@ public class Movement : MonoBehaviour
         jumpTimerReset = jumpTimer;
         doubleJumpTimerReset = doubleJumpTimer;
         floatTimeReset = floatTime;
+        hitTimerReset = hitTimer;
         SetupJumpVariables();
     }
 
@@ -83,20 +99,63 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
-        Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
-
+        HandleInput();
         GroundCheck();
-        HandleMovement(direction);
+        HandleHitReaction();
+        if (direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
+        {
+            anim.SetBool("SlideStop", false);
+            anim.SetTrigger("Slide");
+            isSliding = true;
+            rb.velocity = (moveDir + new Vector3(0, 1f, 0)) * InitialSlideSpeed;
+        }
+
+        if (rb.velocity.magnitude <= slideSpeedThreshold && isSliding)
+        {
+            anim.SetBool("SlideStop", true);
+            isSliding = false;
+        }
         HandleSlam();
         HandleJumping();
         HandleGravity();
     }
 
+    private void HandleInput()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        direction = new Vector3(horizontal, 0f, vertical).normalized;
+    }
+
+    private void HandleHitReaction()
+    {
+        if (hitRecover)
+        {
+            anim.SetBool("Recover", true);
+        }
+        else
+        {
+            anim.SetBool("Recover", false);
+        }
+        if (hitReaction)
+        {
+            hitTimer -= Time.deltaTime;
+            direction = Vector3.zero;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (isGrounded && isSliding)
+        {
+            rb.velocity = rb.velocity * slideSlowSpeed;
+        }
+        HandleMovement();
+    }
+
     private void HandleSlam()
     {
-        if (isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming)
+        if (isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding)
         {
             anim.SetTrigger("Slam");
             isStartingSlam = true;
@@ -109,6 +168,7 @@ public class Movement : MonoBehaviour
         {
             //rb.AddRelativeForce(Vector3.up * jumpForce);
             isJumping = true;
+            isSliding = false;
             useGroundedGravity = false;
             anim.SetTrigger("Jump");
             anim.SetBool("Jumping", true);
@@ -120,6 +180,13 @@ public class Movement : MonoBehaviour
         }
 
         // double jump
+        HandleDoubleJump();
+
+        HandleFloating();
+    }
+
+    private void HandleDoubleJump()
+    {
         if (isJumping && Input.GetButtonDown("Jump") && jumpTimer <= 0.38f && !startDoubleJump && !isStartingSlam && !isSlamming && !hasDoubleJumped)
         {
             startDoubleJump = true;
@@ -134,14 +201,12 @@ public class Movement : MonoBehaviour
             anim.SetTrigger("DoubleJump");
             isDoubleJumping = true;
         }
-
-        HandleFloating();
     }
 
     private void HandleFloating()
     {
         // floating
-        if (isJumping && jumpTimer <= 0 && Input.GetButton("Jump") && !isStartingSlam && !isSlamming && floatTime >= 0f && !fallingFromFloat)
+        if (isJumping && jumpTimer <= 0 && Input.GetButton("Jump") && !isStartingSlam && !isSlamming && floatTime >= 0f && !fallingFromFloat && !hitReaction && !isSliding)
         {
             isFloating = true;
             anim.SetBool("Floating", true);
@@ -213,24 +278,37 @@ public class Movement : MonoBehaviour
         if (isGrounded)
         {
             startDoubleJump = false;
-            jumpTimer = jumpTimerReset;
+            
             doubleJumpTimer = doubleJumpTimerReset;
             isStartingSlam = false;
             isSlamming = false;
             hasDoubleJumped = false;
             floatTime = floatTimeReset;
             fallingFromFloat = false;
+            //hitRecover = true;
+        }
+        if (isGrounded && hitTimer <= 0)
+        {
+            hitRecover = true;
+            hitTimer = hitTimerReset;
+        }
+        if (isGrounded && jumpTimer <= 0.4f)
+        {
+            isJumping = false;
+            jumpTimer = jumpTimerReset;
+            anim.SetBool("Jumping", false);
+            useGroundedGravity = true;
         }
     }
 
-    private void HandleMovement(Vector3 direction)
+    private void HandleMovement()
     {
         if (direction.magnitude >= 0.5f)
         {
 
             if (speed < maxSpeed)
             {
-                speed += Time.deltaTime * speedUpTime;
+                speed += Time.fixedDeltaTime * speedUpTime;
             }
             else
             {
@@ -240,11 +318,11 @@ public class Movement : MonoBehaviour
             float angle;
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
             
-            if (isJumping)
+            if (isJumping && !isSliding)
             {
-                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 1f);// don't turn
+                angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, 1f);
             }
-            else if (isFloating && isJumping)
+            else if (isFloating && isJumping && !isSliding)
             {
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             }
@@ -253,18 +331,32 @@ public class Movement : MonoBehaviour
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             }
 
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            if (!isSliding)
+            {
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            }
+            else
+            {
+                Vector3 velocityDirection = rb.velocity;
+                velocityDirection.y = 0;
+                transform.rotation = Quaternion.LookRotation(velocityDirection);
+            }
+            
 
-            Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             moveDir = moveDir.normalized;
 
-            if (isJumping)
+            if (isJumping && !isSliding)
             {
-                rb.AddForce(new Vector3(moveDir.x * airSpeed * Time.deltaTime, 0f, moveDir.z * airSpeed * Time.deltaTime));
+                rb.AddForce(new Vector3(moveDir.x * airSpeed * Time.fixedDeltaTime, 0f, moveDir.z * airSpeed * Time.fixedDeltaTime));
+            }
+            else if (isSliding)
+            {
+                // don't apply directional velocity
             }
             else
             {
-                rb.velocity = new Vector3(moveDir.x, 0f, moveDir.z).normalized * speed * Time.deltaTime;
+                rb.velocity = new Vector3(moveDir.x, 0f, moveDir.z).normalized * speed * Time.fixedDeltaTime;
                 
             }
             anim.SetBool("Moving", true);
@@ -274,10 +366,15 @@ public class Movement : MonoBehaviour
         {
             speed = rb.velocity.magnitude;
             anim.SetBool("Moving", false);
-            if (!isJumping)
+            if (!isJumping && !hitReaction && !isSliding)
             {
                 rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
             }
+            else if (hitReaction)
+            {
+                // don't apply velocity
+            }
+            
             //print(speed);
         }
     }
@@ -295,13 +392,39 @@ public class Movement : MonoBehaviour
         isSlamming = true;
     }
 
+    public void HitReaction()
+    {
+        hitReaction = true;
+        hitRecover = false;
+        anim.SetTrigger("Hit");
+    }
+
+    public void HitRecovery()
+    {
+        hitReaction = false;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
+        /*
         if (collision.gameObject.tag == "Ground")
         {
             isJumping = false;
             anim.SetBool("Jumping", false);
             useGroundedGravity = true;
+        }
+        */
+        if (collision.gameObject.tag == "Enemy")
+        {
+            // Calculate Angle Between the collision point and the player
+            Vector3 dir = collision.contacts[0].point - transform.position;
+            // We then get the opposite (-Vector3) and normalize it
+            dir = -dir.normalized;
+            // And finally we add force in the direction of dir and multiply it by force. 
+            // This will push back the player
+            HitReaction();
+            //rb.velocity = Vector3.zero;
+            rb.velocity = dir * hitForce;
         }
     }
 

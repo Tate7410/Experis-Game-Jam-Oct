@@ -15,4 +15,9 @@ public class PlayerAnimatorHandler : MonoBehaviour
     {
         movement.Slam();
     }
+
+    public void HitRecover()
+    {
+        movement.HitRecovery();
+    }
 }
