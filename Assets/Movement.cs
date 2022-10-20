@@ -49,6 +49,9 @@ public class Movement : MonoBehaviour
     // floating variables
     public bool isFloating = false;
     public GameObject balloon;
+    public float floatTime = 3f;
+    float floatTimeReset;
+    bool fallingFromFloat = false;
 
     // slamming
     bool isStartingSlam = false;
@@ -64,6 +67,7 @@ public class Movement : MonoBehaviour
         maxSpeed = speed;
         jumpTimerReset = jumpTimer;
         doubleJumpTimerReset = doubleJumpTimer;
+        floatTimeReset = floatTime;
         SetupJumpVariables();
     }
 
@@ -84,23 +88,19 @@ public class Movement : MonoBehaviour
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
 
         GroundCheck();
-
-
-
         HandleMovement(direction);
+        HandleSlam();
+        HandleJumping();
+        HandleGravity();
+    }
 
+    private void HandleSlam()
+    {
         if (isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming)
         {
             anim.SetTrigger("Slam");
             isStartingSlam = true;
         }
-
-
-        //jumping
-
-        HandleJumping();
-
-        HandleGravity();
     }
 
     private void HandleJumping()
@@ -135,21 +135,30 @@ public class Movement : MonoBehaviour
             isDoubleJumping = true;
         }
 
+        HandleFloating();
+    }
+
+    private void HandleFloating()
+    {
         // floating
-        if (isJumping && jumpTimer <= 0 && Input.GetButton("Jump") && !isStartingSlam && !isSlamming)
+        if (isJumping && jumpTimer <= 0 && Input.GetButton("Jump") && !isStartingSlam && !isSlamming && floatTime >= 0f && !fallingFromFloat)
         {
             isFloating = true;
             anim.SetBool("Floating", true);
+            floatTime -= Time.deltaTime;
         }
         else
         {
             isFloating = false;
             anim.SetBool("Floating", false);
             balloon.SetActive(false);
-            
         }
 
-        
+        if (floatTime <= 0 && !fallingFromFloat)
+        {
+            anim.SetTrigger("Fall");
+            fallingFromFloat = true;
+        }
     }
 
     private void HandleGravity()
@@ -209,6 +218,8 @@ public class Movement : MonoBehaviour
             isStartingSlam = false;
             isSlamming = false;
             hasDoubleJumped = false;
+            floatTime = floatTimeReset;
+            fallingFromFloat = false;
         }
     }
 

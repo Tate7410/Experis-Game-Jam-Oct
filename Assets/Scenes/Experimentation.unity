@@ -399,7 +399,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 245735935}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 22e043e7ae4a51e41ac4e5be0a948dc4, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -915,7 +915,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 572424077}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 22e043e7ae4a51e41ac4e5be0a948dc4, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
@@ -1773,7 +1773,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1185100509}
-  m_LocalRotation: {x: 0.0820827, y: 0.000000017676083, z: -0.0000000014558134, w: 0.99662554}
+  m_LocalRotation: {x: 0.0820827, y: -0.000000017676083, z: 0.0000000014558134, w: 0.99662554}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2014,9 +2014,12 @@ MonoBehaviour:
   maxJumpTime: 1
   jumpTimer: 0.5
   doubleJumpTimer: 0.2
+  startDoubleJump: 0
+  hasDoubleJumped: 0
   isDoubleJumping: 0
   isFloating: 0
   balloon: {fileID: 288308370786536312}
+  floatTime: 3
   slamSpeed: 50
   anim: {fileID: 9001546933138713372}
 --- !u!136 &1303554777
@@ -2048,7 +2051,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 1
+  m_CollisionDetection: 2
 --- !u!1 &1362483618
 GameObject:
   m_ObjectHideFlags: 3
@@ -2472,7 +2475,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2013133440}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 22e043e7ae4a51e41ac4e5be0a948dc4, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
