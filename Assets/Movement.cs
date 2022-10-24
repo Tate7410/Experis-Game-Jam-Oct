@@ -31,7 +31,7 @@ public class Movement : MonoBehaviour
     // gravity variables
     bool useGroundedGravity = true;
     float gravity = -9.8f;
-    float groundedGravity = -0.05f;
+    float groundedGravity = -1f;
 
     // jump variables
     public float jumpForce = 5f;
@@ -342,6 +342,7 @@ public class Movement : MonoBehaviour
                 transform.rotation = Quaternion.LookRotation(velocityDirection);
             }
             
+            
 
             moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             moveDir = moveDir.normalized;
@@ -369,6 +370,10 @@ public class Movement : MonoBehaviour
             if (!isJumping && !hitReaction && !isSliding)
             {
                 rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+            }
+            else if (isGrounded && !hitReaction && !isSliding)
+            {
+                rb.velocity = new Vector3(0f, -1f, 0f);
             }
             else if (hitReaction)
             {
