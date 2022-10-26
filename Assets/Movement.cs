@@ -76,6 +76,11 @@ public class Movement : MonoBehaviour
     public float slideSlowSpeed = 0.1f;
     public float slideSpeedThreshold = 0.5f;
 
+    //  slope handling
+    public float maxSlopeAngle;
+    private RaycastHit slopeHit;
+    public LayerMask slopeCheckLayers;
+
 
     private void Start()
     {
@@ -355,6 +360,10 @@ public class Movement : MonoBehaviour
             {
                 // don't apply directional velocity
             }
+            else if (OnSlope())
+            {
+                rb.velocity = GetSlopeMoveDirection() * speed * Time.fixedDeltaTime;
+            }
             else
             {
                 rb.velocity = new Vector3(moveDir.x, 0f, moveDir.z).normalized * speed * Time.fixedDeltaTime;
@@ -439,5 +448,21 @@ public class Movement : MonoBehaviour
         {
             Gizmos.DrawWireSphere(groundCheckPos.position, groundCheckRadius);
         }
+    }
+
+    public bool OnSlope()
+    {
+        if (Physics.Raycast(groundCheckPos.position, Vector3.down, out slopeHit, 1f, slopeCheckLayers))
+        {
+            float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
+            return angle < maxSlopeAngle && angle != 0;
+        }
+
+        return false;
+    }
+
+    private Vector3 GetSlopeMoveDirection()
+    {
+        return Vector3.ProjectOnPlane(moveDir, slopeHit.normal).normalized;
     }
 }
