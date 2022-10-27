@@ -81,6 +81,9 @@ public class Movement : MonoBehaviour
     private RaycastHit slopeHit;
     public LayerMask slopeCheckLayers;
 
+    // balloon pop
+    public Transform balloonCheck;
+    public float balloonPopRadius = 1f;
 
     private void Start()
     {
@@ -107,6 +110,38 @@ public class Movement : MonoBehaviour
         HandleInput();
         GroundCheck();
         HandleHitReaction();
+        HandleSlide();
+        HandleSlam();
+        HandleJumping();
+        Collider[] balloons = Physics.OverlapSphere(balloonCheck.position, groundCheckRadius, whatIsGround);
+        foreach (Collider balloon in balloons)
+        {
+            if (balloon.gameObject.tag == "Balloon")
+            {
+                // reset variables
+                startDoubleJump = false;
+                doubleJumpTimer = doubleJumpTimerReset;
+                isStartingSlam = false;
+                isSlamming = false;
+                hasDoubleJumped = false;
+                floatTime = floatTimeReset;
+                fallingFromFloat = false;
+                // jump
+                isJumping = true;
+                isSliding = false;
+                useGroundedGravity = false;
+                anim.SetTrigger("Jump");
+                anim.SetBool("Jumping", true);
+                rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
+                // pop balloon
+                balloon.GetComponent<BalloonScript>().PopBalloon();
+            }
+        }
+        HandleGravity();
+    }
+
+    private void HandleSlide()
+    {
         if (direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
         {
             anim.SetBool("SlideStop", false);
@@ -120,9 +155,6 @@ public class Movement : MonoBehaviour
             anim.SetBool("SlideStop", true);
             isSliding = false;
         }
-        HandleSlam();
-        HandleJumping();
-        HandleGravity();
     }
 
     private void HandleInput()
@@ -275,6 +307,7 @@ public class Movement : MonoBehaviour
     private void GroundCheck()
     {
         isGrounded = Physics.CheckSphere(groundCheckPos.position, groundCheckRadius, whatIsGround);
+
         if (!isGrounded)
         {
             isJumping = true;
@@ -380,10 +413,6 @@ public class Movement : MonoBehaviour
             {
                 rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
             }
-            else if (isGrounded && !hitReaction && !isSliding)
-            {
-                rb.velocity = new Vector3(0f, -1f, 0f);
-            }
             else if (hitReaction)
             {
                 // don't apply velocity
@@ -428,6 +457,10 @@ public class Movement : MonoBehaviour
             useGroundedGravity = true;
         }
         */
+        if (collision.gameObject.tag == "Balloon")
+        {
+            collision.gameObject.GetComponent<BalloonScript>().PopBalloon();
+        }
         if (collision.gameObject.tag == "Enemy")
         {
             // Calculate Angle Between the collision point and the player
@@ -447,6 +480,10 @@ public class Movement : MonoBehaviour
         if (groundCheckPos != null)
         {
             Gizmos.DrawWireSphere(groundCheckPos.position, groundCheckRadius);
+        }
+        if (balloonCheck != null)
+        {
+            Gizmos.DrawWireSphere(balloonCheck.position, balloonPopRadius);
         }
     }
 

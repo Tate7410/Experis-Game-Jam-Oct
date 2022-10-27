@@ -57,11 +57,21 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\EasyOutlines\Editor\Inspector\Base\RampEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\ShadowTextureRendererEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\EditorBase.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\DrawSceneObjectEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\Editor\PostprocessBuildCheck.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\ProjectorShaderGUI.cs" />
     <Compile Include="Assets\EasyOutlines\Editor\Inspector\Base\BasicShaderEditor.cs" />
     <Compile Include="Assets\EasyOutlines\Editor\Tools\OutlinesNormalCalc.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\DrawTargetObjectEditor.cs" />
     <Compile Include="Assets\EasyOutlines\Editor\Inspector\OutlineEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\MipmappedShadowFallbackEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\Editor\ProjectorEditor.cs" />
     <Compile Include="Assets\EasyOutlines\Editor\Inspector\Base\ShaderEditorUtility.cs" />
     <Compile Include="Assets\EasyOutlines\Editor\Inspector\MaskOutlineEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\Scripts\Editor\PropertyBlockForTransparentReceiverEditor.cs" />
+    <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\Editor\ProjectorMaterialPreprocessor.cs" />
     <Compile Include="Assets\EasyOutlines\Editor\Inspector\OnlyOutlineEditor.cs" />
   </ItemGroup>
   <ItemGroup>
