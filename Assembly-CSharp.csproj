@@ -70,6 +70,7 @@
     <Compile Include="Assets\DynamicShadowProjector\Scripts\MipmappedShadowFallback.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\CustomRendererInterface.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\ProjectorForLWRP.cs" />
+    <Compile Include="Assets\BalloonScript.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\FollowTargetObject.cs" />
     <Compile Include="Assets\PlayerAnimatorHandler.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\Utils\ObjectPool.cs" />
@@ -79,7 +80,8 @@
     <Compile Include="Assets\Movement.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\AdditionalProjectorRenderer.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\PropertyBlockForTransparentReceiver.cs" />
-    <Compile Include="Assets\BalloonScript.cs" />
+    <Compile Include="Assets\BalloonParentScript.cs" />
+    <Compile Include="Assets\BaloonCounter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\DynamicShadowProjector\Shaders\Projector\Dynamic\LightxShadowWithLinearFalloff.shader" />
