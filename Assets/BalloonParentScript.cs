@@ -24,7 +24,7 @@ public class BalloonParentScript : MonoBehaviour
             {
                 originalBalloonWasPopped = true;
                 Destroy(balloon);
-                Instantiate(whiteBalloon, transform.position, transform.rotation);
+                Instantiate(whiteBalloon, transform.position, transform.rotation, this.transform);
                 //needsToRespawn = true;
             }
         }

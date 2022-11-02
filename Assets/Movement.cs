@@ -113,10 +113,16 @@ public class Movement : MonoBehaviour
         HandleSlide();
         HandleSlam();
         HandleJumping();
+        BalloonBounce();
+        HandleGravity();
+    }
+
+    private void BalloonBounce()
+    {
         Collider[] balloons = Physics.OverlapSphere(balloonCheck.position, groundCheckRadius, whatIsGround);
         foreach (Collider balloon in balloons)
         {
-            if (balloon.gameObject.tag == "Balloon")
+            if (balloon.gameObject.tag == "Balloon" && !isDoubleJumping)
             {
                 // reset variables
                 startDoubleJump = false;
@@ -137,12 +143,18 @@ public class Movement : MonoBehaviour
                 balloon.GetComponent<BalloonScript>().PopBalloon();
             }
         }
-        HandleGravity();
     }
 
     private void HandleSlide()
     {
         if (direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
+        {
+            anim.SetBool("SlideStop", false);
+            anim.SetTrigger("Slide");
+            isSliding = true;
+            rb.velocity = (moveDir + new Vector3(0, 1f, 0)) * InitialSlideSpeed;
+        }
+        else if (!isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || !isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
         {
             anim.SetBool("SlideStop", false);
             anim.SetTrigger("Slide");
@@ -197,6 +209,11 @@ public class Movement : MonoBehaviour
             anim.SetTrigger("Slam");
             isStartingSlam = true;
         }
+        else if (!isGrounded && anim.GetBool("Jumping") == false && isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding)
+        {
+            anim.SetTrigger("Slam");
+            isStartingSlam = true;
+        }
     }
 
     private void HandleJumping()
@@ -236,6 +253,7 @@ public class Movement : MonoBehaviour
         if (isJumping && doubleJumpTimer >= 0 && Input.GetButtonUp("Jump") && startDoubleJump)
         {
             anim.SetTrigger("DoubleJump");
+            anim.SetBool("Jumping", true);
             isDoubleJumping = true;
         }
     }
@@ -244,6 +262,12 @@ public class Movement : MonoBehaviour
     {
         // floating
         if (isJumping && jumpTimer <= 0 && Input.GetButton("Jump") && !isStartingSlam && !isSlamming && floatTime >= 0f && !fallingFromFloat && !hitReaction && !isSliding)
+        {
+            isFloating = true;
+            anim.SetBool("Floating", true);
+            floatTime -= Time.deltaTime;
+        }
+        else if (!isGrounded && anim.GetBool("Jumping") == false && Input.GetButton("Jump") && !isStartingSlam && !isSlamming && floatTime >= 0f && !fallingFromFloat && !hitReaction && !isSliding)
         {
             isFloating = true;
             anim.SetBool("Floating", true);
@@ -336,6 +360,13 @@ public class Movement : MonoBehaviour
             jumpTimer = jumpTimerReset;
             anim.SetBool("Jumping", false);
             useGroundedGravity = true;
+        }
+        if (!isGrounded && anim.GetBool("Jumping") == false && !isSliding)
+        {
+            isJumping = true;
+            useGroundedGravity = false;
+            anim.SetTrigger("Jump");
+            anim.SetBool("Jumping", true);
         }
     }
 
@@ -457,8 +488,24 @@ public class Movement : MonoBehaviour
             useGroundedGravity = true;
         }
         */
-        if (collision.gameObject.tag == "Balloon")
+        if (collision.gameObject.tag == "Balloon" && !isDoubleJumping)
         {
+            // reset variables
+            startDoubleJump = false;
+            doubleJumpTimer = doubleJumpTimerReset;
+            isStartingSlam = false;
+            isSlamming = false;
+            hasDoubleJumped = false;
+            floatTime = floatTimeReset;
+            fallingFromFloat = false;
+            // jump
+            isJumping = true;
+            isSliding = false;
+            useGroundedGravity = false;
+            anim.SetTrigger("Jump");
+            anim.SetBool("Jumping", true);
+            rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
+            // pop balloon
             collision.gameObject.GetComponent<BalloonScript>().PopBalloon();
         }
         if (collision.gameObject.tag == "Enemy")
