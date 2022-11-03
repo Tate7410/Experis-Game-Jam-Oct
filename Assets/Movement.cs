@@ -122,22 +122,9 @@ public class Movement : MonoBehaviour
         Collider[] balloons = Physics.OverlapSphere(balloonCheck.position, groundCheckRadius, whatIsGround);
         foreach (Collider balloon in balloons)
         {
-            if (balloon.gameObject.tag == "Balloon" && !isDoubleJumping)
+            if (balloon.gameObject.tag == "Balloon")
             {
-                // reset variables
-                startDoubleJump = false;
-                doubleJumpTimer = doubleJumpTimerReset;
-                isStartingSlam = false;
-                isSlamming = false;
-                hasDoubleJumped = false;
-                floatTime = floatTimeReset;
-                fallingFromFloat = false;
-                // jump
-                isJumping = true;
-                isSliding = false;
-                useGroundedGravity = false;
-                anim.SetTrigger("Jump");
-                anim.SetBool("Jumping", true);
+                ResetVariablesOnBounce();
                 rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
                 // pop balloon
                 balloon.GetComponent<BalloonScript>().PopBalloon();
@@ -244,9 +231,10 @@ public class Movement : MonoBehaviour
         if (isJumping && Input.GetButtonDown("Jump") && jumpTimer <= 0.38f && !startDoubleJump && !isStartingSlam && !isSlamming && !hasDoubleJumped)
         {
             startDoubleJump = true;
-            hasDoubleJumped = true;
+            doubleJumpTimer = doubleJumpTimerReset;
+            //hasDoubleJumped = true;
         }
-        if (startDoubleJump)
+        if (startDoubleJump && !hasDoubleJumped)
         {
             doubleJumpTimer -= Time.deltaTime;
         }
@@ -255,6 +243,10 @@ public class Movement : MonoBehaviour
             anim.SetTrigger("DoubleJump");
             anim.SetBool("Jumping", true);
             isDoubleJumping = true;
+        }
+        if (doubleJumpTimer <= 0 && !hasDoubleJumped)
+        {
+            startDoubleJump = false;
         }
     }
 
@@ -442,7 +434,7 @@ public class Movement : MonoBehaviour
             anim.SetBool("Moving", false);
             if (!isJumping && !hitReaction && !isSliding)
             {
-                rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+                rb.velocity = new Vector3(0f, 0f, 0f);
             }
             else if (hitReaction)
             {
@@ -456,6 +448,7 @@ public class Movement : MonoBehaviour
     public void DoubleJump()
     {
         rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.7f, rb.velocity.z);
+        hasDoubleJumped = true;
         isDoubleJumping = false;
         startDoubleJump = false;
     }
@@ -488,22 +481,9 @@ public class Movement : MonoBehaviour
             useGroundedGravity = true;
         }
         */
-        if (collision.gameObject.tag == "Balloon" && !isDoubleJumping)
+        if (collision.gameObject.tag == "Balloon")
         {
-            // reset variables
-            startDoubleJump = false;
-            doubleJumpTimer = doubleJumpTimerReset;
-            isStartingSlam = false;
-            isSlamming = false;
-            hasDoubleJumped = false;
-            floatTime = floatTimeReset;
-            fallingFromFloat = false;
-            // jump
-            isJumping = true;
-            isSliding = false;
-            useGroundedGravity = false;
-            anim.SetTrigger("Jump");
-            anim.SetBool("Jumping", true);
+            ResetVariablesOnBounce();
             rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
             // pop balloon
             collision.gameObject.GetComponent<BalloonScript>().PopBalloon();
@@ -520,6 +500,28 @@ public class Movement : MonoBehaviour
             //rb.velocity = Vector3.zero;
             rb.velocity = dir * hitForce;
         }
+    }
+
+    private void ResetVariablesOnBounce()
+    {
+        // reset variables
+        startDoubleJump = false;
+        doubleJumpTimer = doubleJumpTimerReset;
+        isStartingSlam = false;
+        isSlamming = false;
+        hasDoubleJumped = false;
+        floatTime = floatTimeReset;
+        fallingFromFloat = false;
+        //reset double jump variables
+        isDoubleJumping = false;
+        startDoubleJump = false;
+        // jump
+        isJumping = true;
+        isSliding = false;
+        jumpTimer = jumpTimerReset;
+        useGroundedGravity = false;
+        anim.SetTrigger("Jump");
+        anim.SetBool("Jumping", true);
     }
 
     private void OnDrawGizmosSelected()
