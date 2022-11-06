@@ -85,6 +85,11 @@ public class Movement : MonoBehaviour
     public Transform balloonCheck;
     public float balloonPopRadius = 1f;
 
+    // platforms
+    /*
+    public LayerMask platforms;
+    public bool isOnPlatform;
+    */
     private void Start()
     {
         maxSpeed = speed;
@@ -391,7 +396,6 @@ public class Movement : MonoBehaviour
             {
                 angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
             }
-
             if (!isSliding)
             {
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
@@ -402,11 +406,12 @@ public class Movement : MonoBehaviour
                 velocityDirection.y = 0;
                 transform.rotation = Quaternion.LookRotation(velocityDirection);
             }
-            
-            
+
 
             moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
             moveDir = moveDir.normalized;
+
+            //isOnPlatform = Physics.Raycast(groundCheckPos.position, Vector3.down, groundCheckRadius, platforms);
 
             if (isJumping && !isSliding)
             {
@@ -420,16 +425,23 @@ public class Movement : MonoBehaviour
             {
                 rb.velocity = GetSlopeMoveDirection() * speed * Time.fixedDeltaTime;
             }
+            /*
+            else if (isOnPlatform && isGrounded)
+            {
+                rb.velocity = new Vector3(moveDir.x, moveDir.y, moveDir.z).normalized * speed * Time.fixedDeltaTime;
+                print("onplatform");
+            }
+            */
             else
             {
                 rb.velocity = new Vector3(moveDir.x, 0f, moveDir.z).normalized * speed * Time.fixedDeltaTime;
-                
             }
             anim.SetBool("Moving", true);
             //controller.Move(moveDir.normalized * speed * Time.deltaTime);
         }
         else
         {
+            //isOnPlatform = Physics.Raycast(groundCheckPos.position, Vector3.down, groundCheckRadius, platforms);
             speed = rb.velocity.magnitude;
             anim.SetBool("Moving", false);
             if (!isJumping && !hitReaction && !isSliding)
@@ -440,7 +452,13 @@ public class Movement : MonoBehaviour
             {
                 // don't apply velocity
             }
-            
+            /*
+            else if (isOnPlatform && isGrounded)
+            {
+                rb.velocity = new Vector3(0f, moveDir.y, 0f);
+                print("onplatform");
+            }
+            */
             //print(speed);
         }
     }
