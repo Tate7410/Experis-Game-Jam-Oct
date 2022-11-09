@@ -77,13 +77,17 @@
     <Compile Include="Assets\PlayerAnimatorHandler.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\Utils\ObjectPool.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Test\CullingTest.cs" />
+    <Compile Include="Assets\EnemyBall.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\DrawTargetObject.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Samples\Scripts\FPSCheck.cs" />
     <Compile Include="Assets\Movement.cs" />
     <Compile Include="Assets\BaloonCounter.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\AdditionalProjectorRenderer.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\PropertyBlockForTransparentReceiver.cs" />
-    <Compile Include="Assets\EnemyBall.cs" />
+    <Compile Include="Assets\PlayerHealth.cs" />
+    <Compile Include="Assets\Wall1.cs" />
+    <Compile Include="Assets\Wall2.cs" />
+    <Compile Include="Assets\Wall3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\DynamicShadowProjector\Shaders\Projector\Dynamic\LightxShadowWithLinearFalloff.shader" />

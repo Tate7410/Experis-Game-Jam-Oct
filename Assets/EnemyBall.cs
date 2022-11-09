@@ -9,6 +9,7 @@ public class EnemyBall : MonoBehaviour
     public bool chasePlayer = false;
     private GameObject player;
     private Rigidbody rb;
+    public float bounceForce = 2f;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,5 +35,26 @@ public class EnemyBall : MonoBehaviour
         {
             rb.AddForce((player.transform.position - transform.position).normalized * speed * Time.fixedDeltaTime);
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Ball")
+        {
+            // Calculate Angle Between the collision point and the player
+            Vector3 dir = collision.contacts[0].point - transform.position;
+            // We then get the opposite (-Vector3) and normalize it
+            dir = -dir.normalized;
+            // And finally we add force in the direction of dir and multiply it by force. 
+            // This will push back the player
+            //rb.velocity = Vector3.zero;
+            rb.velocity = dir * bounceForce;
+        }
+    }
+
+    public void PopEnemy()
+    {
+        // create death effect
+        Destroy(gameObject);
     }
 }

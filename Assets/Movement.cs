@@ -91,6 +91,13 @@ public class Movement : MonoBehaviour
     public LayerMask platforms;
     public bool isOnPlatform;
     */
+
+    // jump on enemies
+    public LayerMask enemies;
+
+    // health script
+    private PlayerHealth health;
+
     private void Start()
     {
         maxSpeed = speed;
@@ -98,6 +105,7 @@ public class Movement : MonoBehaviour
         doubleJumpTimerReset = doubleJumpTimer;
         floatTimeReset = floatTime;
         hitTimerReset = hitTimer;
+        health = GetComponent<PlayerHealth>();
         SetupJumpVariables();
     }
 
@@ -119,8 +127,25 @@ public class Movement : MonoBehaviour
         HandleSlide();
         HandleSlam();
         HandleJumping();
+        HandleEnemyBounce();
         BalloonBounce();
         HandleGravity();
+    }
+
+    private void HandleEnemyBounce()
+    {
+        Collider[] enemySpheres = Physics.OverlapSphere(groundCheckPos.position, groundCheckRadius, enemies);
+        foreach (Collider enemy in enemySpheres)
+        {
+            if (enemy.gameObject.tag == "Ball")
+            {
+                isFloating = false;
+                ResetVariablesOnBounce();
+                rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
+                enemy.GetComponent<EnemyBall>().PopEnemy();
+                health.HealPlayer();
+            }
+        }
     }
 
     private void BalloonBounce()
@@ -134,6 +159,7 @@ public class Movement : MonoBehaviour
                 rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
                 // pop balloon
                 balloon.GetComponent<BalloonScript>().PopBalloon();
+                health.HealPlayer();
             }
         }
     }
@@ -508,7 +534,7 @@ public class Movement : MonoBehaviour
             // pop balloon
             collision.gameObject.GetComponent<BalloonScript>().PopBalloon();
         }
-        if (collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "Ball")
+        if (collision.gameObject.tag == "Enemy" && !health.isInvincible || collision.gameObject.tag == "Ball" && !health.isInvincible)
         {
             // Calculate Angle Between the collision point and the player
             Vector3 dir = collision.contacts[0].point - transform.position;
@@ -519,6 +545,22 @@ public class Movement : MonoBehaviour
             HitReaction();
             //rb.velocity = Vector3.zero;
             rb.velocity = (hitReactionVertical + dir) * hitForce;
+
+            // reset variables
+            startDoubleJump = false;
+            doubleJumpTimer = doubleJumpTimerReset;
+            isStartingSlam = false;
+            isSlamming = false;
+            hasDoubleJumped = false;
+            floatTime = floatTimeReset;
+            fallingFromFloat = false;
+            //reset double jump variables
+            isDoubleJumping = false;
+            startDoubleJump = false;
+
+            // health actions
+            health.startBlinking = true;
+            health.DamagePlayer();
         }
     }
 
