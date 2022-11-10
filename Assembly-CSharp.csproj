@@ -88,6 +88,10 @@
     <Compile Include="Assets\BaloonCounter.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\AdditionalProjectorRenderer.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\PropertyBlockForTransparentReceiver.cs" />
+    <Compile Include="Assets\SavingSystem.cs" />
+    <Compile Include="Assets\MountCheckpoint.cs" />
+    <Compile Include="Assets\BowlCheckpoint.cs" />
+    <Compile Include="Assets\BridgeCheckpoint.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\DynamicShadowProjector\Shaders\Projector\Dynamic\LightxShadowWithLinearFalloff.shader" />

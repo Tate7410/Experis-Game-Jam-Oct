@@ -83,6 +83,7 @@ public class PlayerHealth : MonoBehaviour
 
     public void DamagePlayer()
     {
+        startBlinking = true;
         currentHealth--;
     }
 

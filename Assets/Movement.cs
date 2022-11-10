@@ -559,7 +559,6 @@ public class Movement : MonoBehaviour
             startDoubleJump = false;
 
             // health actions
-            health.startBlinking = true;
             health.DamagePlayer();
         }
     }
