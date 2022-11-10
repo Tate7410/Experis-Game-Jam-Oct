@@ -12,7 +12,7 @@ public class BalloonParentScript : MonoBehaviour
     public float respawnTimer = 1f;
     private float respawnTimerReset;
     private bool needsToRespawn = false;
-    public GameObject whiteBalloon;
+    public GameObject whiteBalloon; // collecting balloons is being put to the side for now. May not use white balloons for respawn
 
     private void Awake()
     {

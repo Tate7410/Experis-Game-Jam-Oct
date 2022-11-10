@@ -58,13 +58,17 @@
   <ItemGroup>
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\CastABlobShadow.cs" />
+    <Compile Include="Assets\PlayerHealth.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Samples\Scripts\Rotate.cs" />
+    <Compile Include="Assets\Wall2.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\CustomRendererPassManager.cs" />
+    <Compile Include="Assets\Wall3.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\Utils\StencilMaskAllocator.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\ShadowTextureRenderer.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Samples\Scripts\Swing.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\CustomRendererPass.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\ProjectorRendererFeature.cs" />
+    <Compile Include="Assets\Wall1.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\DrawSceneObject.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\SRP\Scripts\ProjectorForSRP.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\MipmappedShadowFallback.cs" />
@@ -84,10 +88,6 @@
     <Compile Include="Assets\BaloonCounter.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\AdditionalProjectorRenderer.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\PropertyBlockForTransparentReceiver.cs" />
-    <Compile Include="Assets\PlayerHealth.cs" />
-    <Compile Include="Assets\Wall1.cs" />
-    <Compile Include="Assets\Wall2.cs" />
-    <Compile Include="Assets\Wall3.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\DynamicShadowProjector\Shaders\Projector\Dynamic\LightxShadowWithLinearFalloff.shader" />
