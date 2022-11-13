@@ -111,9 +111,13 @@ public class SavingSystem : MonoBehaviour
         }
     }
 
-    public void Respawn()
+    public void Respawn(bool damagePlayer)
     {
-        health.DamagePlayer();
+        if (damagePlayer)
+        {
+            health.DamagePlayer();
+        }
+        
 
         if (hasReachedBridge)
         {

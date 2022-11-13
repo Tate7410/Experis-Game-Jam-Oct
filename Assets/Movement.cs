@@ -84,6 +84,7 @@ public class Movement : MonoBehaviour
 
     // balloon pop
     public Transform balloonCheck;
+    public LayerMask balloonLayer;
     public float balloonPopRadius = 1f;
 
     // platforms
@@ -139,7 +140,6 @@ public class Movement : MonoBehaviour
         {
             if (enemy.gameObject.tag == "Ball")
             {
-                isFloating = false;
                 ResetVariablesOnBounce();
                 rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
                 enemy.GetComponent<EnemyBall>().PopEnemy();
@@ -150,7 +150,7 @@ public class Movement : MonoBehaviour
 
     private void BalloonBounce()
     {
-        Collider[] balloons = Physics.OverlapSphere(balloonCheck.position, groundCheckRadius, whatIsGround);
+        Collider[] balloons = Physics.OverlapSphere(balloonCheck.position, groundCheckRadius, balloonLayer);
         foreach (Collider balloon in balloons)
         {
             if (balloon.gameObject.tag == "Balloon")
@@ -158,8 +158,9 @@ public class Movement : MonoBehaviour
                 ResetVariablesOnBounce();
                 rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
                 // pop balloon
-                balloon.GetComponent<BalloonScript>().PopBalloon();
+                balloon.gameObject.GetComponent<BalloonScript>().PopBalloon();
                 health.HealPlayer();
+                print("Overlap");
             }
         }
     }
@@ -171,7 +172,7 @@ public class Movement : MonoBehaviour
             anim.SetBool("SlideStop", false);
             anim.SetTrigger("Slide");
             isSliding = true;
-            rb.velocity = (moveDir + new Vector3(0, 1f, 0)) * InitialSlideSpeed;
+            rb.velocity = (moveDir + new Vector3(0, .5f, 0)) * InitialSlideSpeed;
         }
         else if (!isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || !isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
         {
@@ -261,7 +262,7 @@ public class Movement : MonoBehaviour
 
     private void HandleDoubleJump()
     {
-        if (isJumping && Input.GetButtonDown("Jump") && jumpTimer <= 0.38f && !startDoubleJump && !isStartingSlam && !isSlamming && !hasDoubleJumped && !hitReaction)
+        if (isJumping && Input.GetButtonDown("Jump") && jumpTimer <= 0.38f && !startDoubleJump && !isStartingSlam && !isSlamming && !hasDoubleJumped && !hitReaction && !isSliding)
         {
             startDoubleJump = true;
             doubleJumpTimer = doubleJumpTimerReset;
@@ -533,6 +534,8 @@ public class Movement : MonoBehaviour
             rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
             // pop balloon
             collision.gameObject.GetComponent<BalloonScript>().PopBalloon();
+            health.HealPlayer();
+            print("Collider");
         }
         if (collision.gameObject.tag == "Enemy" && !health.isInvincible || collision.gameObject.tag == "Ball" && !health.isInvincible)
         {
@@ -566,6 +569,7 @@ public class Movement : MonoBehaviour
     private void ResetVariablesOnBounce()
     {
         // reset variables
+        isFloating = false;
         startDoubleJump = false;
         doubleJumpTimer = doubleJumpTimerReset;
         isStartingSlam = false;
