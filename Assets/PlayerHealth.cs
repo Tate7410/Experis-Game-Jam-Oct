@@ -155,7 +155,7 @@ public class PlayerHealth : MonoBehaviour
                 }
                 currentLives = 3;
                 PlayerPrefs.SetInt("Lives", 3);
-                SceneManager.LoadScene(0); // remember to change this once the scenes are organized properly
+                SceneManager.LoadScene(1);
             }
         }
     }

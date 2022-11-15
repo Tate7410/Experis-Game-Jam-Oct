@@ -68,6 +68,7 @@
     <Compile Include="Assets\DynamicShadowProjector\Scripts\ShadowTextureRenderer.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Samples\Scripts\Swing.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\CustomRendererPass.cs" />
+    <Compile Include="Assets\FallBarrier.cs" />
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\ProjectorRendererFeature.cs" />
     <Compile Include="Assets\Wall1.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\DrawSceneObject.cs" />
@@ -80,6 +81,7 @@
     <Compile Include="Assets\BalloonScript.cs" />
     <Compile Include="Assets\BridgeCheckpoint.cs" />
     <Compile Include="Assets\MountCheckpoint.cs" />
+    <Compile Include="Assets\MenuManager.cs" />
     <Compile Include="Assets\MovingPlatform.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\FollowTargetObject.cs" />
     <Compile Include="Assets\PlayerAnimatorHandler.cs" />
@@ -94,8 +96,14 @@
     <Compile Include="Assets\DynamicShadowProjector\ProjectorForLWRP-master-universalrp\Scripts\AdditionalProjectorRenderer.cs" />
     <Compile Include="Assets\SignScript.cs" />
     <Compile Include="Assets\DynamicShadowProjector\Scripts\PropertyBlockForTransparentReceiver.cs" />
-    <Compile Include="Assets\FallBarrier.cs" />
     <Compile Include="Assets\GoldBalloon.cs" />
+    <Compile Include="Assets\WinScreenManager.cs" />
+    <Compile Include="Assets\DestroyAfterTime.cs" />
+    <Compile Include="Assets\PauseManager.cs" />
+    <Compile Include="Assets\Resources\Audio\AudioManager.cs" />
+    <Compile Include="Assets\Resources\Audio\Sound.cs" />
+    <Compile Include="Assets\Resources\Audio\StartSong.cs" />
+    <Compile Include="Assets\PauseTimeOnLoad.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

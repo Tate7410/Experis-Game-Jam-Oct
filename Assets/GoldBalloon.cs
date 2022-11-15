@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GoldBalloon : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class GoldBalloon : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             // load win screen
+            SceneManager.LoadScene(2);
         }
     }
 }

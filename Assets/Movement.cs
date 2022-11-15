@@ -99,6 +99,12 @@ public class Movement : MonoBehaviour
     // health script
     private PlayerHealth health;
 
+    // effects
+    public GameObject groundSlamParticles;
+
+    // sounds effects
+    public AudioManager audioManager;
+
     private void Start()
     {
         maxSpeed = speed;
@@ -140,6 +146,7 @@ public class Movement : MonoBehaviour
         {
             if (enemy.gameObject.tag == "Ball")
             {
+                audioManager.Play("Pop");
                 ResetVariablesOnBounce();
                 rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
                 enemy.GetComponent<EnemyBall>().PopEnemy();
@@ -155,6 +162,7 @@ public class Movement : MonoBehaviour
         {
             if (balloon.gameObject.tag == "Balloon")
             {
+                audioManager.Play("Pop");
                 ResetVariablesOnBounce();
                 rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
                 // pop balloon
@@ -167,14 +175,14 @@ public class Movement : MonoBehaviour
 
     private void HandleSlide()
     {
-        if (direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
+        if (direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding && !isDoubleJumping || direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding && !isDoubleJumping)
         {
             anim.SetBool("SlideStop", false);
             anim.SetTrigger("Slide");
             isSliding = true;
             rb.velocity = (moveDir + new Vector3(0, .5f, 0)) * InitialSlideSpeed;
         }
-        else if (!isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding || !isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding)
+        else if (!isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding && !isDoubleJumping || !isGrounded && anim.GetBool("Jumping") == false && direction.magnitude >= 0.5f && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !hitReaction && !isSliding && !isDoubleJumping)
         {
             anim.SetBool("SlideStop", false);
             anim.SetTrigger("Slide");
@@ -225,12 +233,12 @@ public class Movement : MonoBehaviour
 
     private void HandleSlam()
     {
-        if (isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction)
+        if (isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction && !isDoubleJumping || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction && !isDoubleJumping)
         {
             anim.SetTrigger("Slam");
             isStartingSlam = true;
         }
-        else if (!isGrounded && anim.GetBool("Jumping") == false && isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction)
+        else if (!isGrounded && anim.GetBool("Jumping") == false && isJumping && Input.GetAxisRaw("Attack") >= 0.5f && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction && !isDoubleJumping || isJumping && Input.GetButtonDown("Fire2") && !isStartingSlam && !startDoubleJump && !isSlamming && !isSliding && !hitReaction && !isDoubleJumping)
         {
             anim.SetTrigger("Slam");
             isStartingSlam = true;
@@ -528,8 +536,14 @@ public class Movement : MonoBehaviour
             useGroundedGravity = true;
         }
         */
+        if (isSlamming && collision.gameObject.tag == "Ground")
+        {
+            Instantiate(groundSlamParticles, balloonCheck.position, balloonCheck.rotation);
+            audioManager.Play("Thud");
+        }
         if (collision.gameObject.tag == "Balloon")
         {
+            audioManager.Play("Pop");
             ResetVariablesOnBounce();
             rb.velocity = new Vector3(rb.velocity.x, initialJumpVelocity * 0.8f, rb.velocity.z);
             // pop balloon
@@ -539,6 +553,7 @@ public class Movement : MonoBehaviour
         }
         if (collision.gameObject.tag == "Enemy" && !health.isInvincible || collision.gameObject.tag == "Ball" && !health.isInvincible)
         {
+            
             // Calculate Angle Between the collision point and the player
             Vector3 dir = collision.contacts[0].point - transform.position;
             // We then get the opposite (-Vector3) and normalize it
