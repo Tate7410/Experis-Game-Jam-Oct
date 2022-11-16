@@ -146,7 +146,7 @@ Transform:
   m_Children:
   - {fileID: 2440791624065595207}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2440791622552801044
 MonoBehaviour:
@@ -227,6 +227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47b6abb3dab5bc841a72b2323059ae40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  confetti: {fileID: 1844793709477987604, guid: 659487d77986822488f4b76aab9ba0c0, type: 3}
 --- !u!114 &7296910763322088759
 MonoBehaviour:
   m_ObjectHideFlags: 0
